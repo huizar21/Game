@@ -8,6 +8,8 @@ var touchtext;
 var cursors;
 var player2;
 var textforwinner;
+var vita=3;
+var vitatext; 
 
 function preload() {
     game.load.image('sky', '/assets/sky.png');
@@ -37,7 +39,7 @@ function create() {
         // For elements that have animations
         player = game.add.sprite(32, game.world.height - 150, 'dude');
         game.physics.arcade.enable(player); 
-        player.body.bounce.y = 0.2;
+        player.body.bounce.y = 0.5;
         player.body.gravity.y = 300;
         player.body.collideWorldBounds = true;
         player.animations.add('left', [0, 1, 2, 3], 10, true);
@@ -45,11 +47,9 @@ function create() {
 
         player2 = game.add.sprite(32, game.world.height-150 , 'bluesky');
         game.physics.arcade.enable(player2);
-        player2.body.bounce.y=0.2;
         player2.body.gravity.y=300;
         player2.body.collideWorldBounds =  true;
-        player2.animations.add('left', [0, 1, 2, 3], 10, true);
-        player2.animations.add('right', [5, 6, 7, 8], 10, true);
+        player2.body.bounce.setTo(0.5, 0.5);
         
         //Elements that dessapear
         platformsdia = game.add.group();
@@ -65,15 +65,14 @@ function create() {
         dia =  platformsdia.create(200, 150, 'diamond');
         dia =  platformsdia.create(150, 80, 'diamond'); 
         dia =  platformsdia.create(100, 150, 'diamond'); 
-        touchtext = game.add.text(16, 30,'Touch: 0', {fontsize: '32px', fill: '#fff'});
-        
+        touchtext = game.add.text(16, 50,'Touch: 0', {fontsize: '32px', fill: '#fff'});
+        vitatext = game.add.text(650,50,'Life: 3', {fontsize: '32px', fill: '#fff'});
 }
 function update() {
    game.physics.arcade.collide(player, platforms);
    game.physics.arcade.collide(player2, platforms);
     cursors = game.input.keyboard.createCursorKeys();
     player.body.velocity.x = 0;
-    player2.body.velocity.x = 0;
     if (cursors.left.isDown)
     {
         player.body.velocity.x = -150;
@@ -94,13 +93,29 @@ function update() {
         player.body.velocity.y = -350;
     }
     game.physics.arcade.overlap(player, platformsdia, collectdia, null, this);
+    player2.body.gravity.x = 150;
+    player2.body.gravity.y = 150;
+    player2.body.bounce.setTo(1, 1);
+
+    game.physics.arcade.overlap(player, player2,CollideEnemy, null, this);
+    
 }
 function collectdia (player, platformsdia){
-    // Removes the star from the screen
     platformsdia.kill();
     touch = touch +1;
     touchtext.text = 'Touch: ' + touch;
     if(touch == 10){
-        textforwinner = game.add.text(250, 256,'CONGRATULATIONS!!', {fontsize: '700px', fill: '#fff'});
+        textforwinner = game.add.text(250, 256,'YOU ARE WINNER', {fontsize: '400px', fill: '#fff'});
+    }
+}
+function CollideEnemy(player, player2){
+    if(game.physics.arcade.collide(player2, player)){
+        if(vita == 0 && touch<10){
+        textforwinner = game.add.text(250,256,'YOU ARE LOSER', {fontsize: '400px', fill: '#fff'}); 
+        }
+        else if(vita>0){    
+            vita--;
+            vitatext.text = 'Life: ' + vita;            
+        }
     }
 }
