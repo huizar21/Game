@@ -1,4 +1,9 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'area', { preload: preload, create: create, update: update });
+var soundofwin = new Audio('/music/musicofwin.mp3');
+var soundofback = new Audio('/music/Superboy.mp3');
+var soundofvita = new Audio('/music/vida.mp3');
+var soundoflose = new Audio('/music/lose.mp3');
+var soundof
 var player;
 var platforms;
 var platformsdia;
@@ -69,6 +74,7 @@ function create() {
         vitatext = game.add.text(650,50,'Life: 3', {fontsize: '32px', fill: '#fff'});
 }
 function update() {
+    soundofback.play();
    game.physics.arcade.collide(player, platforms);
    game.physics.arcade.collide(player2, platforms);
     cursors = game.input.keyboard.createCursorKeys();
@@ -96,7 +102,6 @@ function update() {
     player2.body.gravity.x = 150;
     player2.body.gravity.y = 150;
     player2.body.bounce.setTo(1, 1);
-
     game.physics.arcade.overlap(player, player2,CollideEnemy, null, this);
     
 }
@@ -104,11 +109,14 @@ function collectdia (player, platformsdia){
     platformsdia.kill();
     touch = touch +1;
     touchtext.text = 'Touch: ' + touch;
-    if(touch == 10){
+    if(touch == 10 && vita >0){
         textforwinner = game.add.text(250, 256,'YOU ARE WINNER', {fontsize: '400px', fill: '#fff'});
+        soundofwin.play();
     }
+    soundofvita.play();
 }
 function CollideEnemy(player, player2){
+    soundoflose.play();
     if(game.physics.arcade.collide(player2, player)){
         if(vita == 0 && touch<10){
         textforwinner = game.add.text(250,256,'YOU ARE LOSER', {fontsize: '400px', fill: '#fff'}); 
