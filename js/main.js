@@ -3,7 +3,6 @@ var soundofwin = new Audio('/music/musicofwin.mp3');
 var soundofback = new Audio('/music/Superboy.mp3');
 var soundofvita = new Audio('/music/vida.mp3');
 var soundoflose = new Audio('/music/lose.mp3');
-var soundof
 var player;
 var platforms;
 var platformsdia;
@@ -22,6 +21,7 @@ function preload() {
     game.load.image('ground', '/assets/platform.png');
     game.load.image('star', '/assets/star.png');
     game.load.image('diamond', '/assets/diamond.png');
+    game.load.image('sole', '/assets/dudesole.png');
     game.load.spritesheet('dude', '/assets/dude.png', 32, 48);
     game.load.spritesheet('bluesky', '/assets/bluesky.png', 32, 48);
 }
@@ -29,9 +29,10 @@ function create() {
         //  For elements visibles but not animated
         game.add.sprite(0, 0, 'landscape');
         game.add.sprite(100, 10, 'star');
-        game.add.sprite(250, 10, 'star');
+        game.add.sprite(250, 10, 'star'); 
         game.add.sprite(450, 10, 'star');
         game.add.sprite(650, 10, 'star');
+        game.add.sprite(618, 35, 'sole');
         platforms = game.add.group();
         platforms.enableBody = true;
         var ground = platforms.create(0, game.world.height - 64, 'ground');
@@ -71,10 +72,10 @@ function create() {
         dia =  platformsdia.create(150, 80, 'diamond'); 
         dia =  platformsdia.create(100, 150, 'diamond'); 
         touchtext = game.add.text(16, 50,'Touch: 0', {fontsize: '32px', fill: '#fff'});
-        vitatext = game.add.text(650,50,'Life: 3', {fontsize: '32px', fill: '#fff'});
+        vitatext = game.add.text(650,50,'3', {fontsize: '32px', fill: '#fff'});
 }
 function update() {
-    soundofback.play();
+   soundofback.play();
    game.physics.arcade.collide(player, platforms);
    game.physics.arcade.collide(player2, platforms);
     cursors = game.input.keyboard.createCursorKeys();
@@ -109,7 +110,7 @@ function collectdia (player, platformsdia){
     platformsdia.kill();
     touch = touch +1;
     touchtext.text = 'Touch: ' + touch;
-    if(touch == 10 && vita >0){
+    if(touch == 10 && vita>=0){
         textforwinner = game.add.text(250, 256,'YOU ARE WINNER', {fontsize: '400px', fill: '#fff'});
         soundofwin.play();
     }
@@ -118,12 +119,12 @@ function collectdia (player, platformsdia){
 function CollideEnemy(player, player2){
     soundoflose.play();
     if(game.physics.arcade.collide(player2, player)){
-        if(vita == 0 && touch<10){
+        if(vita < 0 && touch<10){
         textforwinner = game.add.text(250,256,'YOU ARE LOSER', {fontsize: '400px', fill: '#fff'}); 
         }
         else if(vita>0){    
             vita--;
-            vitatext.text = 'Life: ' + vita;            
+            vitatext.text = vita;            
         }
     }
 }
